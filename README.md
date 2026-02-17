@@ -3,7 +3,7 @@
 ## 1. Descripción del Proyecto
 Este módulo tiene como objetivo transformar series de tiempo financieras crudas (precios de **BTC** y **TSLA**) en representaciones vectoriales latentes (**embeddings**) utilizando el modelo de base **Amazon Chronos Bolt**.
 
-El propósito es capturar la estructura profunda del mercado, la volatilidad y los patrones secuenciales en vectores densos de alta dimensionalidad (768 features), que servirán como *input* (X) para modelos predictivos posteriores, evitando el uso de precios explícitos para reducir el ruido.
+El propósito es capturar la estructura profunda del mercado, la volatilidad y los patrones secuenciales en vectores densos de alta dimensionalidad (768 features), que servirán como *input* (X) para modelos predictivos posteriores.
 
 ---
 
@@ -13,8 +13,8 @@ Para maximizar la relevancia de la información capturada, se han definido venta
 
 | Activo | Ventana | Justificación Financiera |
 | :--- | :--- | :--- |
-| **TSLA** (Tesla) | **5 Días** | Corresponde a una **semana bursátil estándar** (Lunes a Viernes). Al excluir fines de semana (donde no hay mercado), capturamos la "vela semanal" pura sin ruido de huecos temporales. |
-| **BTC** (Bitcoin) | **8 Días** | Bitcoin opera 24/7. Una ventana de 8 días captura un **ciclo semanal completo (7 días)** más el día de confirmación (*momentum*) respecto al mismo día de la semana anterior. |
+| **TSLA** (Tesla) | **8 Días** | Cubre una semana bursátil completa (5 días) más 3 días de contexto adicional para confirmar la tendencia de la semana anterior y suavizar el ruido de inicio de semana. |
+| **BTC** (Bitcoin) | **10 Días** | Captura una visión más amplia del ciclo de mercado crypto (24/7). 10 días permiten al modelo identificar patrones de volatilidad de corto plazo y correcciones que una ventana semanal estándar podría perder. |
 
 ---
 
@@ -26,8 +26,8 @@ El proceso utiliza **Chronos Bolt Base**, un modelo basado en la arquitectura T5
 
 ```mermaid
 graph LR
-    A[Raw Data Parquet] --> B{Slicing Logic\n(Last 5 or 8 days)}
+    A[Raw Data Parquet] --> B{Slicing Logic\n(Last 8 or 10 days)}
     B --> C[Tensor (Batch, Time)]
     C --> D[Chronos Bolt Encoder]
     D --> E[Embeddings Latentes]
-    E --> F[Parquet File (2, 768) o Parquet File (2, 512) dependiendo si es base o small]
+    E --> F[Parquet File (2, 768)]
