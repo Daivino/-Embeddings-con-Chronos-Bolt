@@ -26,8 +26,8 @@ El proceso utiliza **Chronos Bolt Base**, un modelo basado en la arquitectura T5
 
 ```mermaid
 graph LR
-    A[Raw Data Parquet] --> B{"Slicing Logic\n(Last 8 or 10 days)"}
-    B --> C[Tensor (Batch, Time)]
-    C --> D[Chronos Bolt Encoder]
-    D --> E[Embeddings Latentes]
+    A["Raw Data Parquet"] --> B{"Slicing Logic\n(Last 8 or 10 days)"}
+    B --> C["Tensor (Batch, Time)"]
+    C --> D["Chronos Bolt Encoder"]
+    D --> E["Embeddings Latentes"]
     E --> F["Parquet File (2, 768)"]
